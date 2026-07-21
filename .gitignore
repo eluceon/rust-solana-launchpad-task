@@ -1,2 +1,4 @@
 test-ledger
 backend/.env
+.idea
+.PVS-Studio
