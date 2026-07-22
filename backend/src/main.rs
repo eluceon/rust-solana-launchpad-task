@@ -299,15 +299,37 @@ fn parse_token_created(logs: &RpcLogsResponse, _program_id: Pubkey) -> Option<To
     None
 }
 
+const FIXED_6_DECIMALS: u32 = 6;
+const FIXED_6_SCALE: u64 = 10u64.pow(FIXED_6_DECIMALS);
+
+/// Parses a decimal string into an integer with 6 fixed decimals,
+/// e.g. "120.12" -> 120_120_000. Digits beyond the 6th decimal place
+/// are truncated, not rounded.
 fn to_fixed_6(txt: &str) -> Result<u64> {
-    // TODO(student): parse a decimal string into an integer with 6 fixed decimals.
-    // Examples:
-    // - "120" -> 120_000_000
-    // - "120.12" -> 120_120_000
-    // - "0.000001" -> 1
-    // Extra digits after the 6th decimal place should be truncated, not rounded.
-    let _ = txt;
-    todo!("student task: implement fixed-6 parser")
+    let txt = txt.trim();
+    let (int_part, frac_part) = txt.split_once('.').unwrap_or((txt, ""));
+
+    let int: u64 = int_part
+        .parse()
+        .with_context(|| format!("invalid integer part in price {txt:?}"))?;
+
+    if !frac_part.chars().all(|c| c.is_ascii_digit()) {
+        return Err(anyhow!("invalid fractional part in price {txt:?}"));
+    }
+
+    let kept = frac_part.len().min(FIXED_6_DECIMALS as usize);
+    let frac = if kept == 0 {
+        0
+    } else {
+        let digits: u64 = frac_part[..kept]
+            .parse()
+            .with_context(|| format!("invalid fractional part in price {txt:?}"))?;
+        digits * 10u64.pow(FIXED_6_DECIMALS - kept as u32)
+    };
+
+    int.checked_mul(FIXED_6_SCALE)
+        .and_then(|v| v.checked_add(frac))
+        .ok_or_else(|| anyhow!("price {txt:?} overflows fixed-6 range"))
 }
 
 #[cfg(test)]
@@ -338,9 +360,7 @@ mod tests {
 
     #[test]
     fn to_fixed_6_truncates_fraction_to_six_digits() {
-        // TODO(student): this assertion is intentionally wrong.
-        // The parser is expected to truncate after 6 digits instead of rounding.
-        assert_eq!(to_fixed_6("1.1234569").unwrap(), 1_123_457);
+        assert_eq!(to_fixed_6("1.1234569").unwrap(), 1_123_456);
     }
 
     #[test]
