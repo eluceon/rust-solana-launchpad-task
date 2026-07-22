@@ -2,7 +2,7 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "litesvm": "mocha -r tsx/cjs -t 1000000 \"tests/**/*.ts\"",
+    "litesvm": "node --no-allocation-site-pretenuring node_modules/mocha/bin/mocha -r tsx/cjs -t 1000000 \"tests/**/*.ts\"",
     "test": "yarn run litesvm",
     "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"

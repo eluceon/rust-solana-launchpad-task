@@ -13,7 +13,7 @@
 cd program-task
 yarn install
 anchor build
-yarn run ts-mocha -p ./tsconfig.json -t 1000000 "tests/**/*.ts"
+yarn run litesvm
 ```
 
 Ожидаемый результат в начале:
