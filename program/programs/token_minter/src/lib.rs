@@ -4,9 +4,7 @@ use anchor_spl::{
     token::{self, Mint, MintTo, Token, TokenAccount},
 };
 use mpl_token_metadata::{
-    instructions::CreateMetadataAccountV3CpiBuilder,
-    types::DataV2,
-    ID as MPL_TOKEN_METADATA_ID,
+    instructions::CreateMetadataAccountV3CpiBuilder, types::DataV2, ID as MPL_TOKEN_METADATA_ID,
 };
 use sol_usd_oracle::{state::OracleState, PRICE_DECIMALS};
 
@@ -70,7 +68,8 @@ pub mod token_minter {
             MinterError::OracleDecimalsMismatch
         );
 
-        let fee_lamports = compute_fee_lamports(ctx.accounts.config.mint_fee_usd, oracle_state.price)?;
+        let fee_lamports =
+            compute_fee_lamports(ctx.accounts.config.mint_fee_usd, oracle_state.price)?;
 
         // Transfer SOL fee from user to treasury
         system_program::transfer(

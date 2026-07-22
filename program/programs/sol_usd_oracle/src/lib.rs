@@ -31,7 +31,11 @@ pub mod sol_usd_oracle {
         require!(new_price > 0, OracleError::InvalidPrice);
 
         let oracle = &mut ctx.accounts.oracle;
-        require_keys_eq!(ctx.accounts.admin.key(), oracle.admin, OracleError::Unauthorized);
+        require_keys_eq!(
+            ctx.accounts.admin.key(),
+            oracle.admin,
+            OracleError::Unauthorized
+        );
 
         let current_slot = Clock::get()?.slot;
         apply_price_update(oracle, new_price, current_slot)

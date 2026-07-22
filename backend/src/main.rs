@@ -53,7 +53,8 @@ impl Config {
             env::var("BACKEND_KEYPAIR_PATH").context("BACKEND_KEYPAIR_PATH is required")?;
         if backend_keypair_path.starts_with("~/") {
             if let Some(home) = env::var_os("HOME") {
-                backend_keypair_path = format!("{}/{}", home.to_string_lossy(), &backend_keypair_path[2..]);
+                backend_keypair_path =
+                    format!("{}/{}", home.to_string_lossy(), &backend_keypair_path[2..]);
             }
         }
         let poll = env::var("PRICE_POLL_INTERVAL_SEC")
@@ -149,7 +150,11 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-async fn run_price_updater(cfg: Config, price_source: PriceSource, admin: Arc<Keypair>) -> Result<()> {
+async fn run_price_updater(
+    cfg: Config,
+    price_source: PriceSource,
+    admin: Arc<Keypair>,
+) -> Result<()> {
     let client = RpcClient::new(cfg.rpc_http.clone());
     let mut ticker = interval(cfg.price_poll_interval);
 
@@ -172,7 +177,10 @@ async fn try_update_price(
     match price_source.fetch_price().await {
         Ok(price) => {
             if price == 0 {
-                warn!("Skipped {} price update because fetched price is zero", kind);
+                warn!(
+                    "Skipped {} price update because fetched price is zero",
+                    kind
+                );
                 return;
             }
             match submit_price(client, cfg, price, admin).await {
@@ -210,12 +218,8 @@ async fn submit_price(
         .await
         .context("fetch blockhash")?;
 
-    let tx = Transaction::new_signed_with_payer(
-        &[ix],
-        Some(&admin.pubkey()),
-        &[admin.as_ref()],
-        bh,
-    );
+    let tx =
+        Transaction::new_signed_with_payer(&[ix], Some(&admin.pubkey()), &[admin.as_ref()], bh);
 
     let sig = client
         .send_and_confirm_transaction_with_spinner_and_commitment(
@@ -415,7 +419,10 @@ mod tests {
         match source {
             PriceSource::Mock(_) => panic!("expected http source"),
             PriceSource::Http { url } => {
-                assert_eq!(url, "https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDT")
+                assert_eq!(
+                    url,
+                    "https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDT"
+                )
             }
         }
     }
