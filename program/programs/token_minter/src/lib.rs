@@ -149,7 +149,7 @@ pub mod token_minter {
             .map_err(|_| MinterError::MetadataCpiFailed)?;
         }
 
-        emit!(TokenCreated {
+        let event = TokenCreated {
             creator: ctx.accounts.user.key(),
             mint: ctx.accounts.mint.key(),
             decimals,
@@ -157,7 +157,11 @@ pub mod token_minter {
             fee_lamports,
             sol_usd_price: oracle_state.price,
             slot: Clock::get()?.slot,
-        });
+        };
+        // Plain-text log alongside the Anchor event so off-chain listeners can
+        // pick it up from `logs_subscribe` without decoding program data.
+        msg!("{:?}", event);
+        emit!(event);
 
         Ok(())
     }
@@ -274,6 +278,7 @@ impl MinterConfig {
 }
 
 #[event]
+#[derive(Debug)]
 pub struct TokenCreated {
     pub creator: Pubkey,
     pub mint: Pubkey,
