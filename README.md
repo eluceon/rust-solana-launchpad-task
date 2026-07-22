@@ -2,6 +2,20 @@
 
 Учебный мини-лаунчпад на Solana + Anchor: два on-chain контракта (SOL/USD oracle и token minter), Rust backend для обновления цены и прослушки событий, а также Remix фронтенд (папка `frontend/`).
 
+## Адреса в Devnet
+
+| Компонент | Адрес |
+|---|---|
+| Program ID оракула (`sol_usd_oracle`) | [`BZzWDRREZ3Bw4E7oJrQKVRJgkPd2hkmYLXHjpsmnUhXC`](https://explorer.solana.com/address/BZzWDRREZ3Bw4E7oJrQKVRJgkPd2hkmYLXHjpsmnUhXC?cluster=devnet) |
+| Program ID launchpad (`token_minter`) | [`7wzZRUV2jvg5fyecgdaDVXBa3eYP7yJ2KTqBCLjxPKTa`](https://explorer.solana.com/address/7wzZRUV2jvg5fyecgdaDVXBa3eYP7yJ2KTqBCLjxPKTa?cluster=devnet) |
+| PDA состояния оракула (`oracle_state`) | [`8fpMm4hJzTmGZBgEZJV1hUc9dCe68hYjfNnbHgmy376m`](https://explorer.solana.com/address/8fpMm4hJzTmGZBgEZJV1hUc9dCe68hYjfNnbHgmy376m?cluster=devnet) |
+
+Транзакции создания токенов в Devnet:
+
+- [mint `EYEUf4FPpGBYEfZ3bdGymGQooYBHUGqPBVEVfjc8Wgpt`](https://explorer.solana.com/tx/kcA5rpbd3ekXXx5Px5p517U2icQVz5476cMG6xMwQLqUVU5xG2cXqsK9U6Emo9ctASkyWa2mF884Mn4LuP3uWR8?cluster=devnet)
+- [mint `BsQhGPEhCu6gn19XgjwhwXAsK1h4rzsdYjzMsnuNAJLL`](https://explorer.solana.com/tx/3Nx36PSLoFuAeto9WfS8vfFJYTC6Fzc5SK3kheM2o55yn3hjRuCg4UaDGH7g9koJsdAvhnqa5Zacnf76FA6Tgnoq?cluster=devnet)
+- [mint `AJm5zd41poUZyhGuajtzgbx1aucbdxUUs5n7WF2yx2Ex`](https://explorer.solana.com/tx/2BLADD2K3QUkG4bFNmvFM9FasrpfNdBXzCpVhpJzD1zsPXkV9NVsEtTizdXKE2Y9LZk6uJfUoxFQi1744VjULcWc?cluster=devnet)
+
 ## Структура
 - `program/` — Anchor workspace  
   - `programs/sol_usd_oracle` — хранит цену SOL/USD (decimals = 6)  
