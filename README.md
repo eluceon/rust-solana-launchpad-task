@@ -80,7 +80,12 @@
    cd program
    anchor test
    ```
-   Или `yarn litesvm` для запуска только тестов в `tests/*.litesvm.ts`.
+   Или `yarn litesvm` для запуска только тестов в `tests/*.litesvm.ts`, либо `make test` из корня.
+
+   Тесты запускаются через `mocha -r tsx/cjs`: исходная связка `ts-mocha`/`ts-node@7`
+   не работает на Node >= 20.19 (включённый по умолчанию `require(esm)` ломает загрузку
+   ESM-тестов). Кроме того, `litesvm` поднят до 0.8.0 — нативный бинарник 0.4.0 собран
+   под glibc >= 2.38 и не загружается на Ubuntu 22.04.
 
 ## Переменные окружения для backend
 
@@ -111,3 +116,7 @@
 3. `cd program && node scripts/init-local.js` — скопировать `ORACLE_STATE_PUBKEY` в `backend/.env`
 4. `cd backend && cargo run`
 5. `cd frontend && npm run dev` — открыть в браузере и покликать.
+
+Проверить минт без фронтенда можно скриптом `cd program && node scripts/mint-demo.js`
+(ожидает, что минтер инициализирован с treasury = кошелёк деплоера, как делает
+`init-local.js`; для devnet — `RPC_URL=https://api.devnet.solana.com`).
